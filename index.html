@@ -5,81 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HÓNG HỚT - XEM VIDEO & VIP</title>
     <style>
-        /* ĐÃ ĐỔI TÔNG MÀU MỚI: XANH NAVY & HỒNG NEON CỰC CHÁY */
+        /* TÔNG MÀU CYBERPUNK FIRE CỰC CHÁY */
         :root {
-            --bg-color: #0f172a; 
-            --text-color: #f8fafc; 
-            --sidebar-bg: #1e293b; 
-            --card-bg: #334155; 
-            --primary-color: #ec4899; 
+            --bg-main: #09090b; /* Đen nhám sâu */
+            --bg-card: #18181b; 
+            --neon-red: #ef4444; 
+            --neon-orange: #f97316;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --gradient-fire: linear-gradient(45deg, #ef4444, #f97316);
         }
 
-        /* GIAO DIỆN SÁNG: HỒNG PHẤN NHẸ NHÀNG */
+        /* GIAO DIỆN SÁNG: SUNSET (HOÀNG HÔN) */
         body.light-mode {
-            --bg-color: #fdf2f8; 
-            --text-color: #0f172a; 
-            --sidebar-bg: #ffffff; 
-            --card-bg: #ffffff; 
-            --primary-color: #db2777; 
+            --bg-main: #fff7ed; 
+            --bg-card: #ffffff; 
+            --text-main: #09090b;
+            --neon-red: #ea580c;
+            --neon-orange: #dc2626;
+            --text-muted: #52525b;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-main);
+            color: var(--text-main);
             display: flex;
+            flex-direction: column; /* Đổi thành bố cục dọc */
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* BỐ CỤC MENU NGANG (TOP NAVBAR) KHÁC BIỆT HOÀN TOÀN */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid transparent;
+            border-image: var(--gradient-fire) 1;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 900;
+            background: var(--gradient-fire);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .menu-item:hover {
+            color: var(--text-main);
+            border-color: var(--neon-orange);
+        }
+
+        .menu-item.active {
+            background: var(--gradient-fire);
+            color: white;
+            border: none;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-auth {
+            background: var(--gradient-fire);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
             transition: 0.3s;
         }
-
-        /* Sidebar Menu */
-        .sidebar {
-            width: 250px;
-            background-color: var(--sidebar-bg);
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-            flex-shrink: 0;
-            box-sizing: border-box;
-        }
-
-        .sidebar h2 { text-align: center; color: var(--primary-color); margin-bottom: 20px; font-weight: 900; letter-spacing: 1px;}
-
-        .login-btn-sidebar, .theme-btn {
-            background: var(--primary-color); color: white; border: none; padding: 12px;
-            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-size: 15px;
-            box-shadow: 0 4px 6px rgba(236, 72, 153, 0.3);
-        }
-        .theme-btn { background: #8b5cf6; margin-top: 20px; box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3); }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+        .btn-auth:hover { box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); transform: scale(1.05); }
         
-        .user-info { text-align: center; margin-bottom: 10px; font-size: 14px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; }
-        .vip-badge { background: gold; color: black; font-size: 10px; font-weight: bold; padding: 3px 6px; border-radius: 10px; margin-left: 5px; }
+        .btn-icon { background: transparent; border: 1px solid var(--neon-orange); color: var(--neon-orange); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn-icon:hover { background: var(--gradient-fire); color: white; border-color: transparent; }
 
-        .menu-item { padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .menu-item:hover, .menu-item.active { background: var(--primary-color); color: white; }
+        .user-info-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; font-size: 14px;}
+        .vip-badge { background: #eab308; color: black; font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 10px; text-transform: uppercase;}
 
         /* Main Content */
-        .main { flex: 1; padding: 20px; overflow-y: auto; box-sizing: border-box; }
-        #searchInput { width: 100%; max-width: 400px; padding: 12px; border-radius: 20px; border: none; outline: none; background: var(--sidebar-bg); color: var(--text-color); margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-        #tutBox { background: var(--sidebar-bg); padding: 15px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 4px solid var(--primary-color);}
+        .main-container { padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        
+        .top-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px; flex-wrap: wrap;}
+        
+        #searchInput { 
+            flex: 1; min-width: 250px; max-width: 500px; padding: 15px 25px; 
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); 
+            background: var(--bg-card); color: var(--text-main); font-size: 16px;
+            transition: 0.3s;
+        }
+        #searchInput:focus { outline: none; border-color: var(--neon-orange); box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); }
+        
+        #tutBox { 
+            background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); 
+            padding: 15px 20px; border-radius: 12px; font-size: 14px;
+        }
 
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
 
-        /* CARD - Ô hiển thị Media Preview */
+        /* THẺ CARD STYLE MỚI HIỆU ỨNG GLOW */
         .card {
-            background: var(--card-bg);
-            border-radius: 12px;
+            background: var(--bg-card);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
             border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--neon-orange);
+            box-shadow: 0 15px 30px rgba(249, 115, 22, 0.2);
         }
 
         .card-media-box {
             width: 100%;
-            height: 280px;
+            height: 320px;
             background-color: #000;
             position: relative;
             overflow: hidden;
@@ -88,89 +164,89 @@
             justify-content: center;
         }
 
-        .card-media-item {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .card-media-item { width: 100%; height: 100%; border: none; }
 
-        .card-content { padding: 15px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-content h3 { margin: 0 0 15px 0; font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-content { padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+        .card-content h3 { margin: 0 0 15px 0; font-size: 16px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .btn-play {
-            background: var(--primary-color); 
-            color: white; border: none; padding: 12px 20px; border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px; border-radius: 8px;
             cursor: pointer; width: 100%; font-weight: bold; font-size: 14px;
-            transition: background 0.3s;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
         }
-        .btn-play:hover { background: #be185d; }
+        
+        .card:hover .btn-play { background: var(--gradient-fire); color: white; border-color: transparent; }
 
-        /* Responsive Mobile */
-        @media screen and (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; padding: 15px; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; }
-            .sidebar h2 { width: 100%; margin-bottom: 15px; }
-            #btnOpenLogin, .theme-btn { width: 48%; margin: 5px 0; padding: 10px; }
-            #userInfoPanel { width: 100%; }
-            .menu-item { flex: 1 1 30%; text-align: center; padding: 10px; margin: 5px; font-size: 13px; }
-            
-            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .card-media-box { height: 220px; }
-            .card-content { padding: 10px; }
-            .btn-play { padding: 10px 5px; font-size: 12px; }
+        /* Responsive */
+        @media screen and (max-width: 900px) {
+            .navbar { flex-direction: column; padding: 15px; gap: 15px; }
+            .nav-menu { width: 100%; overflow-x: auto; padding-bottom: 5px; justify-content: flex-start; }
+            .menu-item { white-space: nowrap; font-size: 13px; padding: 8px 15px; }
+            .nav-actions { width: 100%; justify-content: space-between; }
+            .top-tools { flex-direction: column-reverse; align-items: stretch; }
+            #searchInput { max-width: 100%; }
         }
 
-        /* Modal / Overlay Quảng cáo */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 10000; }
-        .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; padding: 20px; border-radius: 10px; text-align: center; position: relative; color: var(--text-color); box-sizing: border-box; }
-        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; color: var(--primary-color);}
-        .input-box { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; background: rgba(255,255,255,0.9); color: #000;}
+        /* Modals & Overlays */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 10000; }
+        .modal-content { background: var(--bg-card); border: 1px solid var(--neon-red); width: 90%; max-width: 350px; padding: 30px; border-radius: 16px; text-align: center; position: relative; color: var(--text-main); box-shadow: 0 0 30px rgba(239,68,68,0.3);}
+        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: var(--text-muted); transition: 0.3s;}
+        .close-btn:hover { color: var(--neon-red); }
+        .input-box { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; box-sizing: border-box; }
+        .input-box:focus { border-color: var(--neon-orange); outline: none; }
 
         #ad-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.95); z-index: 9999; text-align: center; padding-top: 15vh; color: white;
-            box-sizing: border-box; padding-left: 10px; padding-right: 10px;
+            background: rgba(0,0,0,0.98); z-index: 9999; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
+            box-sizing: border-box; padding: 20px;
         }
-        #countdown-timer { font-size: 80px; font-weight: bold; color: var(--primary-color); margin: 10px 0; text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);}
+        #countdown-timer { font-size: 100px; font-weight: 900; background: var(--gradient-fire); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; filter: drop-shadow(0 0 10px rgba(239,68,68,0.5));}
         
-        #ad-warning {
-            color: #facc15; background: rgba(250, 204, 21, 0.1); padding: 15px; 
-            border-radius: 8px; border: 1px solid #facc15; font-size: 16px; font-weight: bold;
-            display: none; margin-bottom: 20px; max-width: 90%; margin-left: auto; margin-right: auto;
-        }
-
-        .btn-next-link {
-            display: none; padding: 15px 40px; font-size: 20px; font-weight: bold;
-            background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer;
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); animation: pulse 1.5s infinite; margin-top: 20px;
-        }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        #ad-warning { color: #facc15; background: rgba(250, 204, 21, 0.1); padding: 15px 30px; border-radius: 8px; border: 1px solid #facc15; font-size: 16px; font-weight: bold; display: none; margin-bottom: 20px;}
+        .btn-next-link { display: none; padding: 15px 50px; font-size: 22px; font-weight: 900; background: var(--gradient-fire); color: white; border: none; border-radius: 50px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(249, 115, 22, 0.6); animation: pulse 1.5s infinite; margin-top: 30px; }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 20px rgba(249,115,22,0.6); } 50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(239,68,68,0.8); } 100% { transform: scale(1); box-shadow: 0 0 20px rgba(249,115,22,0.6); } }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebarMenu">
-        <h2>🔥 HÓNG HỚT</h2>
-        <button class="login-btn-sidebar" id="btnOpenLogin" onclick="document.getElementById('loginModal').style.display='flex'">Đăng Nhập VIP</button>
-        <div id="userInfoPanel" style="display: none;">
-            <div class="user-info">Xin chào, <b id="displayUsername"></b> <span class="vip-badge">VIP</span></div>
-            <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+    <!-- THANH NAVBAR MỚI -->
+    <div class="navbar" id="navbar">
+        <div class="navbar-brand">🔥 HÓNG HỚT</div>
+        
+        <div class="nav-menu">
+            <div class="menu-item active" onclick="changeTab('Video', this)">🎬 Phim / Video</div>
+            <div class="menu-item" onclick="changeTab('Anime', this)">🌸 Hoạt Hình</div>
+            <div class="menu-item" onclick="changeTab('ACC VIP', this)">🛒 Mua ACC VIP</div>
         </div>
 
-        <div class="menu-item active" onclick="changeTab('Video', this)">🎥 Phim / Video</div>
-        <div class="menu-item" onclick="changeTab('Anime', this)">🌸 Hoạt Hình Anime</div>
-        <div class="menu-item" onclick="changeTab('ACC VIP', this)">🛒 Mua ACC VIP</div>
-        <button class="theme-btn" onclick="toggleTheme()">☀️ Đổi Giao Diện</button>
+        <div class="nav-actions">
+            <button class="btn-icon" onclick="toggleTheme()" title="Đổi giao diện Sáng/Tối">☀️</button>
+            <button class="btn-auth" id="btnOpenLogin" onclick="document.getElementById('loginModal').style.display='flex'">ĐĂNG NHẬP VIP</button>
+            
+            <div id="userInfoPanel" style="display: none;">
+                <div class="user-info-box">
+                    <span id="displayUsername" style="font-weight: bold;"></span> 
+                    <span class="vip-badge">VIP</span>
+                    <button class="btn-icon" style="border:none; padding:5px; color:#ef4444;" onclick="logout()" title="Đăng xuất">❌</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="main">
-        <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm video, anime..." oninput="filterData()">
-        <div id="tutBox">
-            <h3 style="margin-top: 0;">📖 Hướng Dẫn</h3>
-            <p style="margin-bottom: 0;">Xem quảng cáo để mở khóa xem phim 30 phút (VIP không cần xem quảng cáo)!</p>
+    <!-- NỘI DUNG CHÍNH -->
+    <div class="main-container">
+        <div class="top-tools">
+            <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm video, anime..." oninput="filterData()">
+            <div id="tutBox">
+                <b style="color: var(--neon-orange);">CẦN BIẾT:</b> Xem quảng cáo mở khóa phim 30 phút (Tài khoản VIP không cần xem quảng cáo).
+            </div>
         </div>
+
         <div id="content" class="grid-container">
-            <h3>Đang tải dữ liệu, vui lòng chờ...</h3>
+            <h3 style="text-align: center; width: 100%; color: var(--text-muted);">Đang kết nối dữ liệu siêu tốc...</h3>
         </div>
     </div>
 
@@ -178,21 +254,21 @@
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
-            <h2 style="color: var(--primary-color);">👤 Đăng Nhập VIP</h2>
-            <input type="text" id="username" class="input-box" placeholder="Tên đăng nhập">
+            <h2 style="margin-top: 0; background: var(--gradient-fire); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ĐĂNG NHẬP VIP</h2>
+            <input type="text" id="username" class="input-box" placeholder="Tên tài khoản">
             <input type="password" id="password" class="input-box" placeholder="Mật khẩu">
-            <div id="loginMsg" style="margin-bottom:10px; font-weight:bold;"></div>
-            <button class="login-btn-sidebar" onclick="login()">Đăng Nhập</button>
+            <div id="loginMsg" style="margin-bottom:15px; font-size:14px; min-height: 20px;"></div>
+            <button class="btn-auth" style="width: 100%;" onclick="login()">ĐĂNG NHẬP NGAY</button>
         </div>
     </div>
 
     <!-- Overlay Chờ Quảng Cáo -->
-    <div id="ad-overlay">
-        <h2 id="ad-title" style="color: #38bdf8; margin-bottom: 20px; font-size: 22px;">Hệ thống đang chạy thời gian...</h2>
-        <div id="ad-warning">⚠️ Thời gian đã dừng! Vui lòng quay lại tab quảng cáo để tiếp tục đếm.</div>
+    <div id="ad-overlay" style="display: none;">
+        <h2 id="ad-title" style="color: var(--text-muted); font-weight: normal;">Hệ thống đang chuẩn bị liên kết...</h2>
+        <div id="ad-warning">⚠️ QUÁ TRÌNH TẠM DỪNG! Hãy giữ màn hình ở tab quảng cáo để thời gian tiếp tục chạy.</div>
         <div id="countdown-timer">10</div>
-        <p id="ad-text-sec" style="font-size: 18px;">giây</p>
-        <button id="btnNextLink" class="btn-next-link">▶ XEM NGAY ▶</button>
+        <p id="ad-text-sec" style="font-size: 20px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">Giây</p>
+        <button id="btnNextLink" class="btn-next-link">▶ VÀO XEM PHIM NGAY</button>
     </div>
 
     <script>
@@ -222,40 +298,40 @@
             let p = document.getElementById('password').value.trim();
             let msg = document.getElementById('loginMsg');
             
-            if(!u || !p) return msg.innerHTML = "<span style='color:red'>Vui lòng nhập đủ thông tin!</span>";
-            msg.innerHTML = "<span style='color:orange'>Đang kiểm tra...</span>";
+            if(!u || !p) return msg.innerHTML = "<span style='color:#ef4444'>Vui lòng nhập đủ thông tin!</span>";
+            msg.innerHTML = "<span style='color:#f97316'>Đang kiểm tra dữ liệu...</span>";
 
             try {
                 let res = await fetch(`${API_URL}?action=login&username=${u}&password=${p}`);
                 let data = await res.json();
                 
                 if (data.status === "success") {
-                    msg.innerHTML = `<span style='color:green'>Thành công! Hạn VIP: ${data.expire}</span>`;
+                    msg.innerHTML = `<span style='color:#22c55e'>Đăng nhập thành công!<br>Hạn VIP: ${data.expire}</span>`;
                     localStorage.setItem('isVip', 'true');
                     localStorage.setItem('currentUser', u);
                     isVip = true; currentUser = u; checkLoginState();
                     setTimeout(() => document.getElementById('loginModal').style.display='none', 1500);
                 } else if (data.status === "not_activated") {
-                    msg.innerHTML = `<span style='color:orange'>Tài khoản chưa kích hoạt!</span>
-                    <button onclick="activateAcc('${u}')" style="margin-top:10px; padding:5px; background:gold; border:none; cursor:pointer; font-weight:bold; color:black;">Kích Hoạt Ngay</button>`;
+                    msg.innerHTML = `<span style='color:#f97316'>Tài khoản chưa kích hoạt thời gian!</span>
+                    <button onclick="activateAcc('${u}')" style="margin-top:10px; width:100%; padding:8px; background:#eab308; color:black; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Kích Hoạt Ngay</button>`;
                 } else {
-                    msg.innerHTML = `<span style='color:red'>${data.message}</span>`;
+                    msg.innerHTML = `<span style='color:#ef4444'>${data.message}</span>`;
                 }
-            } catch(e) { msg.innerHTML = "<span style='color:red'>Lỗi máy chủ!</span>"; }
+            } catch(e) { msg.innerHTML = "<span style='color:#ef4444'>Lỗi kết nối máy chủ!</span>"; }
         }
 
         async function activateAcc(u) {
             let msg = document.getElementById('loginMsg');
-            msg.innerHTML = "Đang kích hoạt...";
+            msg.innerHTML = "Đang kích hoạt hệ thống...";
             let res = await fetch(`${API_URL}?action=activate&username=${u}`);
             let data = await res.json();
-            if(data.status === "success") msg.innerHTML = "<span style='color:green'>Thành công! Hãy đăng nhập lại.</span>";
-            else msg.innerHTML = `<span style='color:red'>${data.message}</span>`;
+            if(data.status === "success") msg.innerHTML = "<span style='color:#22c55e'>Kích hoạt thành công! Hãy bấm Đăng Nhập lại.</span>";
+            else msg.innerHTML = `<span style='color:#ef4444'>${data.message}</span>`;
         }
 
         function logout() {
             localStorage.removeItem('isVip'); localStorage.removeItem('currentUser');
-            isVip = false; currentUser = null; checkLoginState(); alert("Đã đăng xuất!");
+            isVip = false; currentUser = null; checkLoginState(); alert("Đã đăng xuất tài khoản!");
         }
 
         function normalizeItem(item) {
@@ -277,7 +353,7 @@
                 let data = await res.json();
                 rawData = data.map(normalizeItem).reverse();
                 changeTab('Video', document.querySelector('.menu-item.active'));
-            } catch(e) { document.getElementById('content').innerHTML = "<h3>Lỗi kết nối máy chủ!</h3>"; }
+            } catch(e) { document.getElementById('content').innerHTML = "<h3>Lỗi kết nối máy chủ dữ liệu!</h3>"; }
         }
 
         function changeTab(tab, el) {
@@ -286,8 +362,8 @@
             if(el) el.classList.add('active');
             
             document.getElementById('tutBox').innerHTML = tab === "ACC VIP" 
-                ? `<h3 style="margin-top: 0;">🛒 Mua ACC VIP</h3><p style="margin-bottom: 0;">Vui lòng chọn gói bên dưới để lấy link thanh toán!</p>`
-                : `<h3 style="margin-top: 0;">📖 Hướng Dẫn</h3><p style="margin-bottom: 0;">Xem quảng cáo để mở khóa xem phim 30 phút (VIP không cần xem quảng cáo)!</p>`;
+                ? `<b style="color: var(--neon-orange);">HƯỚNG DẪN:</b> Chọn gói bên dưới và tiến hành thanh toán để nhận tài khoản tự động!`
+                : `<b style="color: var(--neon-orange);">CẦN BIẾT:</b> Xem quảng cáo mở khóa phim 30 phút (Tài khoản VIP bỏ qua quảng cáo).`;
             
             renderList(rawData.filter(x => x.category.trim().toLowerCase() === tab.trim().toLowerCase()));
         }
@@ -307,7 +383,7 @@
             let cat = (category || "").trim().toLowerCase();
 
             if (iUrl !== "") {
-                let fitStyle = (cat === 'acc vip') ? 'object-fit: contain; background: #1e293b;' : 'object-fit: cover; object-position: top center;';
+                let fitStyle = (cat === 'acc vip') ? 'object-fit: contain;' : 'object-fit: cover; object-position: top center;';
                 return `<img class="card-media-item" style="${fitStyle}" src="${iUrl}" alt="${title}" onerror="this.src='https://via.placeholder.com/300x400?text=NO+IMAGE'">`;
             }
 
@@ -325,7 +401,7 @@
                 return `<video class="card-media-item" src="${vUrl}" preload="metadata" style="object-fit: cover; pointer-events: none;"></video>`;
             }
 
-            let fitStyle = (cat === 'acc vip') ? 'object-fit: contain; background: #1e293b;' : 'object-fit: cover; object-position: top center;';
+            let fitStyle = (cat === 'acc vip') ? 'object-fit: contain;' : 'object-fit: cover; object-position: top center;';
             return `<img class="card-media-item" style="${fitStyle}" src="https://via.placeholder.com/300x400?text=HONG+HOT" alt="${title}">`;
         }
 
@@ -336,7 +412,7 @@
                 
                 let hasVideo = item.video && (item.video.includes('tiktok') || item.video.includes('youtu') || item.video.match(/\.(mp4|webm|ogg)$/i));
                 let playIcon = (hasVideo && item.category.trim().toLowerCase() !== 'acc vip') 
-                    ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.8); font-size: 50px; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.8);">▶</div>` 
+                    ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.9); font-size: 60px; pointer-events: none; filter: drop-shadow(0 0 15px #ef4444);">▶</div>` 
                     : '';
                 
                 html += `
@@ -348,7 +424,7 @@
                     <div class="card-content">
                         <h3>${item.title}</h3>
                         <button class="btn-play" onclick="handleButtonClick(${index})">
-                            ${item.btnName ? item.btnName : 'Xem ngay'}
+                            ${item.btnName ? item.btnName : 'XEM NGAY'}
                         </button>
                     </div>
                 </div>`;
@@ -374,13 +450,13 @@
 
             if (isVip && currentUser) {
                 let targetVip = (item.linkVip && item.linkVip !== "undefined" && item.linkVip.trim() !== "") ? item.linkVip : linkToPlay;
-                if (!targetVip) return alert("Chưa gắn Link VIP hoặc Link phim trong file Google Sheet!");
+                if (!targetVip) return alert("Chưa có Link cho phim này!");
                 window.open(targetVip, '_blank');
                 return;
             }
 
             if (!linkToPlay || linkToPlay === "undefined" || linkToPlay.trim() === "") {
-                return alert("Chưa gắn Link phim (Cột Video hoặc Cột Link Thường) trong file Google Sheet!");
+                return alert("Chưa gắn Link phim vào Google Sheet!");
             }
             startAdFlow(linkToPlay);
         }
@@ -392,13 +468,13 @@
             else if(upTitle.includes('1 TUẦN') || upTitle.includes('7 NGÀY')) days = 7;
             else if(upTitle.includes('1 THÁNG') || upTitle.includes('30 NGÀY')) days = 30;
 
-            alert("Đang tạo link thanh toán, vui lòng đợi...");
+            alert("Đang khởi tạo cổng thanh toán...");
             try {
                 let res = await fetch(`${API_URL}?action=get_link&days=${days}`);
                 let data = await res.json();
                 if(data.status === "success") window.open(data.link, "_blank"); 
                 else alert(data.message);
-            } catch(e) { alert("Lỗi mạng! Bạn hãy đảm bảo đã điền link vào Cột Link Thường (F)."); }
+            } catch(e) { alert("Lỗi mạng! Đảm bảo đã thiết lập data trong Sheet."); }
         }
 
         function startAdFlow(finalDestUrl) {
@@ -412,18 +488,15 @@
 
             targetDestinationUrl = finalDestUrl;
             
-            // --- HỆ THỐNG LUÂN PHIÊN QUẢNG CÁO 3 TIKTOK GIỮ NGUYÊN ---
+            // --- HỆ THỐNG LUÂN PHIÊN QUẢNG CÁO CHỈ CÒN 2 LINK MỚI YÊU CẦU ---
             let currentAdStep = localStorage.getItem('adStep') || '1';
             let adUrl = "";
             
             if (currentAdStep === '1') {
-                adUrl = "https://vt.tiktok.com/ZS9h36wYouDLb-ojzE1/";
-                localStorage.setItem('adStep', '2'); 
-            } else if (currentAdStep === '2') {
-                adUrl = "https://vt.tiktok.com/ZS9hwC35QqF5E-27I2e/";
-                localStorage.setItem('adStep', '3'); 
-            } else {
                 adUrl = "https://vt.tiktok.com/ZS9hwx4jjAFVH-tnED8/";
+                localStorage.setItem('adStep', '2'); 
+            } else {
+                adUrl = "https://vt.tiktok.com/ZS9k5B9bkfTHk-oBVAt/";
                 localStorage.setItem('adStep', '1'); 
             }
 
@@ -436,12 +509,12 @@
             let textSec = document.getElementById("ad-text-sec");
             let adTitle = document.getElementById("ad-title");
 
-            overlay.style.display = "block";
+            overlay.style.display = "flex"; // Đổi thành flex để căn giữa
             timerEl.style.display = "block";
             textSec.style.display = "block";
             warningEl.style.display = "none";
             btnNext.style.display = "none";
-            adTitle.innerText = "Hệ thống đang chạy thời gian...";
+            adTitle.innerText = "HỆ THỐNG ĐANG MỞ KHOÁ LINK...";
             
             let timeLeft = 10;
             timerEl.innerText = timeLeft;
@@ -458,7 +531,7 @@
                         
                         timerEl.style.display = "none";
                         textSec.style.display = "none";
-                        adTitle.innerText = "Hoàn tất! Bấm nút bên dưới để chuyển tiếp";
+                        adTitle.innerText = "ĐÃ MỞ KHOÁ THÀNH CÔNG!";
                         warningEl.style.display = "none"; 
                         
                         btnNext.style.display = "inline-block"; 
