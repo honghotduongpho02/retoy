@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HÓNG HỚT - XEM VIDEO & VIP</title>
+    <style>
+        /* ĐÃ ĐỔI TÔNG MÀU MỚI: XANH NAVY & HỒNG NEON CỰC CHÁY */
+        :root {
+            --bg-color: #0f172a; 
+            --text-color: #f8fafc; 
+            --sidebar-bg: #1e293b; 
+            --card-bg: #334155; 
+            --primary-color: #ec4899; 
+        }
+
+        /* GIAO DIỆN SÁNG: HỒNG PHẤN NHẸ NHÀNG */
+        body.light-mode {
+            --bg-color: #fdf2f8; 
+            --text-color: #0f172a; 
+            --sidebar-bg: #ffffff; 
+            --card-bg: #ffffff; 
+            --primary-color: #db2777; 
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            transition: 0.3s;
+        }
+
+        /* Sidebar Menu */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 { text-align: center; color: var(--primary-color); margin-bottom: 20px; font-weight: 900; letter-spacing: 1px;}
+
+        .login-btn-sidebar, .theme-btn {
+            background: var(--primary-color); color: white; border: none; padding: 12px;
+            width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-size: 15px;
+            box-shadow: 0 4px 6px rgba(236, 72, 153, 0.3);
+        }
+        .theme-btn { background: #8b5cf6; margin-top: 20px; box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3); }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+        
+        .user-info { text-align: center; margin-bottom: 10px; font-size: 14px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; }
+        .vip-badge { background: gold; color: black; font-size: 10px; font-weight: bold; padding: 3px 6px; border-radius: 10px; margin-left: 5px; }
+
+        .menu-item { padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .menu-item:hover, .menu-item.active { background: var(--primary-color); color: white; }
+
+        /* Main Content */
+        .main { flex: 1; padding: 20px; overflow-y: auto; box-sizing: border-box; }
+        #searchInput { width: 100%; max-width: 400px; padding: 12px; border-radius: 20px; border: none; outline: none; background: var(--sidebar-bg); color: var(--text-color); margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        #tutBox { background: var(--sidebar-bg); padding: 15px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 4px solid var(--primary-color);}
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+
+        /* CARD - Ô hiển thị Media Preview */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card-media-box {
+            width: 100%;
+            height: 280px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-media-item {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .card-content { padding: 15px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-content h3 { margin: 0 0 15px 0; font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .btn-play {
+            background: var(--primary-color); 
+            color: white; border: none; padding: 12px 20px; border-radius: 6px;
+            cursor: pointer; width: 100%; font-weight: bold; font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn-play:hover { background: #be185d; }
+
+        /* Responsive Mobile */
+        @media screen and (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; padding: 15px; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+            .sidebar h2 { width: 100%; margin-bottom: 15px; }
+            #btnOpenLogin, .theme-btn { width: 48%; margin: 5px 0; padding: 10px; }
+            #userInfoPanel { width: 100%; }
+            .menu-item { flex: 1 1 30%; text-align: center; padding: 10px; margin: 5px; font-size: 13px; }
+            
+            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .card-media-box { height: 220px; }
+            .card-content { padding: 10px; }
+            .btn-play { padding: 10px 5px; font-size: 12px; }
+        }
+
+        /* Modal / Overlay Quảng cáo */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 10000; }
+        .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; padding: 20px; border-radius: 10px; text-align: center; position: relative; color: var(--text-color); box-sizing: border-box; }
+        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; color: var(--primary-color);}
+        .input-box { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; background: rgba(255,255,255,0.9); color: #000;}
+
+        #ad-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95); z-index: 9999; text-align: center; padding-top: 15vh; color: white;
+            box-sizing: border-box; padding-left: 10px; padding-right: 10px;
+        }
+        #countdown-timer { font-size: 80px; font-weight: bold; color: var(--primary-color); margin: 10px 0; text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);}
+        
+        #ad-warning {
+            color: #facc15; background: rgba(250, 204, 21, 0.1); padding: 15px; 
+            border-radius: 8px; border: 1px solid #facc15; font-size: 16px; font-weight: bold;
+            display: none; margin-bottom: 20px; max-width: 90%; margin-left: auto; margin-right: auto;
+        }
+
+        .btn-next-link {
+            display: none; padding: 15px 40px; font-size: 20px; font-weight: bold;
+            background: var(--primary-color); color: white; border: none; border-radius: 10px; cursor: pointer;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); animation: pulse 1.5s infinite; margin-top: 20px;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebarMenu">
+        <h2>🔥 HÓNG HỚT</h2>
+        <button class="login-btn-sidebar" id="btnOpenLogin" onclick="document.getElementById('loginModal').style.display='flex'">Đăng Nhập VIP</button>
+        <div id="userInfoPanel" style="display: none;">
+            <div class="user-info">Xin chào, <b id="displayUsername"></b> <span class="vip-badge">VIP</span></div>
+            <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+        </div>
+
+        <div class="menu-item active" onclick="changeTab('Video', this)">🎥 Phim / Video</div>
+        <div class="menu-item" onclick="changeTab('Anime', this)">🌸 Hoạt Hình Anime</div>
+        <div class="menu-item" onclick="changeTab('ACC VIP', this)">🛒 Mua ACC VIP</div>
+        <button class="theme-btn" onclick="toggleTheme()">☀️ Đổi Giao Diện</button>
+    </div>
+
+    <div class="main">
+        <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm video, anime..." oninput="filterData()">
+        <div id="tutBox">
+            <h3 style="margin-top: 0;">📖 Hướng Dẫn</h3>
+            <p style="margin-bottom: 0;">Xem quảng cáo để mở khóa xem phim 30 phút (VIP không cần xem quảng cáo)!</p>
+        </div>
+        <div id="content" class="grid-container">
+            <h3>Đang tải dữ liệu, vui lòng chờ...</h3>
+        </div>
+    </div>
+
+    <!-- Modal Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
+            <h2 style="color: var(--primary-color);">👤 Đăng Nhập VIP</h2>
+            <input type="text" id="username" class="input-box" placeholder="Tên đăng nhập">
+            <input type="password" id="password" class="input-box" placeholder="Mật khẩu">
+            <div id="loginMsg" style="margin-bottom:10px; font-weight:bold;"></div>
+            <button class="login-btn-sidebar" onclick="login()">Đăng Nhập</button>
+        </div>
+    </div>
+
+    <!-- Overlay Chờ Quảng Cáo -->
+    <div id="ad-overlay">
+        <h2 id="ad-title" style="color: #38bdf8; margin-bottom: 20px; font-size: 22px;">Hệ thống đang chạy thời gian...</h2>
+        <div id="ad-warning">⚠️ Thời gian đã dừng! Vui lòng quay lại tab quảng cáo để tiếp tục đếm.</div>
+        <div id="countdown-timer">10</div>
+        <p id="ad-text-sec" style="font-size: 18px;">giây</p>
+        <button id="btnNextLink" class="btn-next-link">▶ XEM NGAY ▶</button>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbw0jFmXyWvimxqFbmWm8d1Pcyof6w3gug0aYKRVR82xs0xnfDBOyr2dtklNQik1UacU/exec";
+        
+        let rawData = [];
+        let currentTab = 'Video';
+        let targetDestinationUrl = ""; 
+        
+        let isVip = localStorage.getItem('isVip') === 'true';
+        let currentUser = localStorage.getItem('currentUser');
+
+        function checkLoginState() {
+            if (isVip && currentUser) {
+                document.getElementById('btnOpenLogin').style.display = 'none';
+                document.getElementById('userInfoPanel').style.display = 'block';
+                document.getElementById('displayUsername').innerText = currentUser;
+            } else {
+                document.getElementById('btnOpenLogin').style.display = 'block';
+                document.getElementById('userInfoPanel').style.display = 'none';
+            }
+        }
+        checkLoginState();
+
+        async function login() {
+            let u = document.getElementById('username').value.trim();
+            let p = document.getElementById('password').value.trim();
+            let msg = document.getElementById('loginMsg');
+            
+            if(!u || !p) return msg.innerHTML = "<span style='color:red'>Vui lòng nhập đủ thông tin!</span>";
+            msg.innerHTML = "<span style='color:orange'>Đang kiểm tra...</span>";
+
+            try {
+                let res = await fetch(`${API_URL}?action=login&username=${u}&password=${p}`);
+                let data = await res.json();
+                
+                if (data.status === "success") {
+                    msg.innerHTML = `<span style='color:green'>Thành công! Hạn VIP: ${data.expire}</span>`;
+                    localStorage.setItem('isVip', 'true');
+                    localStorage.setItem('currentUser', u);
+                    isVip = true; currentUser = u; checkLoginState();
+                    setTimeout(() => document.getElementById('loginModal').style.display='none', 1500);
+                } else if (data.status === "not_activated") {
+                    msg.innerHTML = `<span style='color:orange'>Tài khoản chưa kích hoạt!</span>
+                    <button onclick="activateAcc('${u}')" style="margin-top:10px; padding:5px; background:gold; border:none; cursor:pointer; font-weight:bold; color:black;">Kích Hoạt Ngay</button>`;
+                } else {
+                    msg.innerHTML = `<span style='color:red'>${data.message}</span>`;
+                }
+            } catch(e) { msg.innerHTML = "<span style='color:red'>Lỗi máy chủ!</span>"; }
+        }
+
+        async function activateAcc(u) {
+            let msg = document.getElementById('loginMsg');
+            msg.innerHTML = "Đang kích hoạt...";
+            let res = await fetch(`${API_URL}?action=activate&username=${u}`);
+            let data = await res.json();
+            if(data.status === "success") msg.innerHTML = "<span style='color:green'>Thành công! Hãy đăng nhập lại.</span>";
+            else msg.innerHTML = `<span style='color:red'>${data.message}</span>`;
+        }
+
+        function logout() {
+            localStorage.removeItem('isVip'); localStorage.removeItem('currentUser');
+            isVip = false; currentUser = null; checkLoginState(); alert("Đã đăng xuất!");
+        }
+
+        function normalizeItem(item) {
+            return {
+                category: item.category || item['Chuyên mục'] || item.chuyenMuc || '',
+                title: item.title || item['Tiêu đề'] || item.tieuDe || '',
+                content: item.content || item['Nội dung'] || item.noiDung || '',
+                image: item.image || item['Ảnh bìa'] || item.anhBia || '',
+                video: item.video || item['Video (Link YouTube)'] || item.linkYoutube || item.youtube || '',
+                linkThuong: item.linkThuong || item['Link thường'] || item.linkNormal || item.link || '',
+                linkVip: item.linkVip || item['Link VIP'] || item.vipLink || '',
+                btnName: item.btnName || item['Tên nút'] || item.tenNut || 'Xem ngay'
+            };
+        }
+
+        async function load() {
+            try {
+                let res = await fetch(API_URL + "?nocache=" + new Date().getTime());
+                let data = await res.json();
+                rawData = data.map(normalizeItem).reverse();
+                changeTab('Video', document.querySelector('.menu-item.active'));
+            } catch(e) { document.getElementById('content').innerHTML = "<h3>Lỗi kết nối máy chủ!</h3>"; }
+        }
+
+        function changeTab(tab, el) {
+            currentTab = tab;
+            document.querySelectorAll('.menu-item').forEach(x => x.classList.remove('active'));
+            if(el) el.classList.add('active');
+            
+            document.getElementById('tutBox').innerHTML = tab === "ACC VIP" 
+                ? `<h3 style="margin-top: 0;">🛒 Mua ACC VIP</h3><p style="margin-bottom: 0;">Vui lòng chọn gói bên dưới để lấy link thanh toán!</p>`
+                : `<h3 style="margin-top: 0;">📖 Hướng Dẫn</h3><p style="margin-bottom: 0;">Xem quảng cáo để mở khóa xem phim 30 phút (VIP không cần xem quảng cáo)!</p>`;
+            
+            renderList(rawData.filter(x => x.category.trim().toLowerCase() === tab.trim().toLowerCase()));
+        }
+
+        function filterData() {
+            let keyword = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = rawData.filter(x => 
+                x.category.trim().toLowerCase() === currentTab.trim().toLowerCase() && 
+                x.title.toLowerCase().includes(keyword)
+            );
+            renderList(filtered);
+        }
+
+        function createMediaPreviewHTML(videoUrl, imageUrl, title, category) {
+            let vUrl = (videoUrl || "").trim();
+            let iUrl = (imageUrl || "").trim();
+            let cat = (category || "").trim().toLowerCase();
+
+            if (iUrl !== "") {
+                let fitStyle = (cat === 'acc vip') ? 'object-fit: contain; background: #1e293b;' : 'object-fit: cover; object-position: top center;';
+                return `<img class="card-media-item" style="${fitStyle}" src="${iUrl}" alt="${title}" onerror="this.src='https://via.placeholder.com/300x400?text=NO+IMAGE'">`;
+            }
+
+            let ttMatch = vUrl.match(/video\/(\d+)/);
+            if (ttMatch && ttMatch[1]) {
+                return `<iframe class="card-media-item" src="https://www.tiktok.com/embed/v2/${ttMatch[1]}" frameborder="0" scrolling="no" allowfullscreen style="width: 100%; height: 100%; pointer-events: none; overflow: hidden; transform: scale(1.02);"></iframe>`;
+            }
+
+            let ytMatch = vUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([\w-]{11})/);
+            if (ytMatch && ytMatch[1]) {
+                return `<iframe class="card-media-item" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none; transform: scale(1.02);"></iframe>`;
+            }
+
+            if (vUrl.match(/\.(mp4|webm|ogg)$/i)) {
+                return `<video class="card-media-item" src="${vUrl}" preload="metadata" style="object-fit: cover; pointer-events: none;"></video>`;
+            }
+
+            let fitStyle = (cat === 'acc vip') ? 'object-fit: contain; background: #1e293b;' : 'object-fit: cover; object-position: top center;';
+            return `<img class="card-media-item" style="${fitStyle}" src="https://via.placeholder.com/300x400?text=HONG+HOT" alt="${title}">`;
+        }
+
+        function renderList(data) {
+            let html = '';
+            data.forEach((item, index) => {
+                let mediaHtml = createMediaPreviewHTML(item.video, item.image, item.title, item.category);
+                
+                let hasVideo = item.video && (item.video.includes('tiktok') || item.video.includes('youtu') || item.video.match(/\.(mp4|webm|ogg)$/i));
+                let playIcon = (hasVideo && item.category.trim().toLowerCase() !== 'acc vip') 
+                    ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.8); font-size: 50px; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.8);">▶</div>` 
+                    : '';
+                
+                html += `
+                <div class="card">
+                    <div class="card-media-box" style="position: relative;">
+                        ${mediaHtml}
+                        ${playIcon}
+                    </div>
+                    <div class="card-content">
+                        <h3>${item.title}</h3>
+                        <button class="btn-play" onclick="handleButtonClick(${index})">
+                            ${item.btnName ? item.btnName : 'Xem ngay'}
+                        </button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('content').innerHTML = html;
+        }
+
+        function handleButtonClick(index) {
+            let currentFiltered = rawData.filter(x => x.category.trim().toLowerCase() === currentTab.trim().toLowerCase());
+            let item = currentFiltered[index];
+            if (!item) return;
+
+            if (item.category.trim().toLowerCase() === 'acc vip') {
+                let directLink = item.linkThuong || item.linkVip; 
+                if (directLink && directLink.trim() !== "") {
+                    window.open(directLink, '_blank');
+                    return;
+                }
+                return buyVIP(item.title); 
+            }
+
+            let linkToPlay = item.linkThuong || item.video;
+
+            if (isVip && currentUser) {
+                let targetVip = (item.linkVip && item.linkVip !== "undefined" && item.linkVip.trim() !== "") ? item.linkVip : linkToPlay;
+                if (!targetVip) return alert("Chưa gắn Link VIP hoặc Link phim trong file Google Sheet!");
+                window.open(targetVip, '_blank');
+                return;
+            }
+
+            if (!linkToPlay || linkToPlay === "undefined" || linkToPlay.trim() === "") {
+                return alert("Chưa gắn Link phim (Cột Video hoặc Cột Link Thường) trong file Google Sheet!");
+            }
+            startAdFlow(linkToPlay);
+        }
+
+        async function buyVIP(title) {
+            let days = 1;
+            let upTitle = title.toUpperCase();
+            if(upTitle.includes('3 NGÀY')) days = 3;
+            else if(upTitle.includes('1 TUẦN') || upTitle.includes('7 NGÀY')) days = 7;
+            else if(upTitle.includes('1 THÁNG') || upTitle.includes('30 NGÀY')) days = 30;
+
+            alert("Đang tạo link thanh toán, vui lòng đợi...");
+            try {
+                let res = await fetch(`${API_URL}?action=get_link&days=${days}`);
+                let data = await res.json();
+                if(data.status === "success") window.open(data.link, "_blank"); 
+                else alert(data.message);
+            } catch(e) { alert("Lỗi mạng! Bạn hãy đảm bảo đã điền link vào Cột Link Thường (F)."); }
+        }
+
+        function startAdFlow(finalDestUrl) {
+            let lastWatchTime = localStorage.getItem("lastWatchTime");
+            let now = new Date().getTime();
+            
+            if (lastWatchTime && (now - lastWatchTime < 30 * 60 * 1000)) {
+                window.open(finalDestUrl, '_blank');
+                return;
+            }
+
+            targetDestinationUrl = finalDestUrl;
+            
+            // --- HỆ THỐNG LUÂN PHIÊN QUẢNG CÁO 3 TIKTOK GIỮ NGUYÊN ---
+            let currentAdStep = localStorage.getItem('adStep') || '1';
+            let adUrl = "";
+            
+            if (currentAdStep === '1') {
+                adUrl = "https://vt.tiktok.com/ZS9h36wYouDLb-ojzE1/";
+                localStorage.setItem('adStep', '2'); 
+            } else if (currentAdStep === '2') {
+                adUrl = "https://vt.tiktok.com/ZS9hwC35QqF5E-27I2e/";
+                localStorage.setItem('adStep', '3'); 
+            } else {
+                adUrl = "https://vt.tiktok.com/ZS9hwx4jjAFVH-tnED8/";
+                localStorage.setItem('adStep', '1'); 
+            }
+
+            window.open(adUrl, "_blank"); 
+
+            let overlay = document.getElementById("ad-overlay");
+            let timerEl = document.getElementById("countdown-timer");
+            let warningEl = document.getElementById("ad-warning");
+            let btnNext = document.getElementById("btnNextLink");
+            let textSec = document.getElementById("ad-text-sec");
+            let adTitle = document.getElementById("ad-title");
+
+            overlay.style.display = "block";
+            timerEl.style.display = "block";
+            textSec.style.display = "block";
+            warningEl.style.display = "none";
+            btnNext.style.display = "none";
+            adTitle.innerText = "Hệ thống đang chạy thời gian...";
+            
+            let timeLeft = 10;
+            timerEl.innerText = timeLeft;
+
+            let timerInterval = setInterval(() => {
+                if (document.hidden || !document.hasFocus()) {
+                    warningEl.style.display = "none";
+                    timeLeft--;
+                    timerEl.innerText = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        localStorage.setItem("lastWatchTime", new Date().getTime()); 
+                        
+                        timerEl.style.display = "none";
+                        textSec.style.display = "none";
+                        adTitle.innerText = "Hoàn tất! Bấm nút bên dưới để chuyển tiếp";
+                        warningEl.style.display = "none"; 
+                        
+                        btnNext.style.display = "inline-block"; 
+                        
+                        btnNext.onclick = function() {
+                            overlay.style.display = "none";
+                            window.open(targetDestinationUrl, '_blank'); 
+                        };
+                    }
+                } else {
+                    warningEl.style.display = "inline-block"; 
+                }
+            }, 1000);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        load();
+    </script>
+</body>
+</html>
