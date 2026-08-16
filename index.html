@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HÓNG HỚT - XEM VIDEO & VIP</title>
+    <title>HÓNG HỚT - XEM VIDEO</title>
     <style>
         /* TÔNG MÀU CYBERPUNK FIRE CỰC CHÁY */
         :root {
@@ -32,12 +32,12 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
-            flex-direction: column; /* Đổi thành bố cục dọc */
+            flex-direction: column; 
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
         }
 
-        /* BỐ CỤC MENU NGANG (TOP NAVBAR) KHÁC BIỆT HOÀN TOÀN */
+        /* BỐ CỤC MENU NGANG (TOP NAVBAR) */
         .navbar {
             display: flex;
             align-items: center;
@@ -135,7 +135,7 @@
 
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
 
-        /* THẺ CARD STYLE MỚI HIỆU ỨNG GLOW */
+        /* THẺ CARD STYLE HIỆU ỨNG GLOW */
         .card {
             background: var(--bg-card);
             border-radius: 16px;
@@ -212,14 +212,13 @@
 </head>
 <body>
 
-    <!-- THANH NAVBAR MỚI -->
+    <!-- THANH NAVBAR -->
     <div class="navbar" id="navbar">
         <div class="navbar-brand">🔥 HÓNG HỚT</div>
         
         <div class="nav-menu">
             <div class="menu-item active" onclick="changeTab('Video', this)">🎬 Phim / Video</div>
             <div class="menu-item" onclick="changeTab('Anime', this)">🌸 Hoạt Hình</div>
-            <div class="menu-item" onclick="changeTab('ACC VIP', this)">🛒 Mua ACC VIP</div>
         </div>
 
         <div class="nav-actions">
@@ -361,9 +360,7 @@
             document.querySelectorAll('.menu-item').forEach(x => x.classList.remove('active'));
             if(el) el.classList.add('active');
             
-            document.getElementById('tutBox').innerHTML = tab === "ACC VIP" 
-                ? `<b style="color: var(--neon-orange);">HƯỚNG DẪN:</b> Chọn gói bên dưới và tiến hành thanh toán để nhận tài khoản tự động!`
-                : `<b style="color: var(--neon-orange);">CẦN BIẾT:</b> Xem quảng cáo mở khóa phim 30 phút (Tài khoản VIP bỏ qua quảng cáo).`;
+            document.getElementById('tutBox').innerHTML = `<b style="color: var(--neon-orange);">CẦN BIẾT:</b> Xem quảng cáo mở khóa phim 30 phút (Tài khoản VIP bỏ qua quảng cáo).`;
             
             renderList(rawData.filter(x => x.category.trim().toLowerCase() === tab.trim().toLowerCase()));
         }
@@ -377,14 +374,12 @@
             renderList(filtered);
         }
 
-        function createMediaPreviewHTML(videoUrl, imageUrl, title, category) {
+        function createMediaPreviewHTML(videoUrl, imageUrl, title) {
             let vUrl = (videoUrl || "").trim();
             let iUrl = (imageUrl || "").trim();
-            let cat = (category || "").trim().toLowerCase();
 
             if (iUrl !== "") {
-                let fitStyle = (cat === 'acc vip') ? 'object-fit: contain;' : 'object-fit: cover; object-position: top center;';
-                return `<img class="card-media-item" style="${fitStyle}" src="${iUrl}" alt="${title}" onerror="this.src='https://via.placeholder.com/300x400?text=NO+IMAGE'">`;
+                return `<img class="card-media-item" style="object-fit: cover; object-position: top center;" src="${iUrl}" alt="${title}" onerror="this.src='https://via.placeholder.com/300x400?text=NO+IMAGE'">`;
             }
 
             let ttMatch = vUrl.match(/video\/(\d+)/);
@@ -401,17 +396,16 @@
                 return `<video class="card-media-item" src="${vUrl}" preload="metadata" style="object-fit: cover; pointer-events: none;"></video>`;
             }
 
-            let fitStyle = (cat === 'acc vip') ? 'object-fit: contain;' : 'object-fit: cover; object-position: top center;';
-            return `<img class="card-media-item" style="${fitStyle}" src="https://via.placeholder.com/300x400?text=HONG+HOT" alt="${title}">`;
+            return `<img class="card-media-item" style="object-fit: cover; object-position: top center;" src="https://via.placeholder.com/300x400?text=HONG+HOT" alt="${title}">`;
         }
 
         function renderList(data) {
             let html = '';
             data.forEach((item, index) => {
-                let mediaHtml = createMediaPreviewHTML(item.video, item.image, item.title, item.category);
+                let mediaHtml = createMediaPreviewHTML(item.video, item.image, item.title);
                 
                 let hasVideo = item.video && (item.video.includes('tiktok') || item.video.includes('youtu') || item.video.match(/\.(mp4|webm|ogg)$/i));
-                let playIcon = (hasVideo && item.category.trim().toLowerCase() !== 'acc vip') 
+                let playIcon = hasVideo 
                     ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.9); font-size: 60px; pointer-events: none; filter: drop-shadow(0 0 15px #ef4444);">▶</div>` 
                     : '';
                 
@@ -437,15 +431,6 @@
             let item = currentFiltered[index];
             if (!item) return;
 
-            if (item.category.trim().toLowerCase() === 'acc vip') {
-                let directLink = item.linkThuong || item.linkVip; 
-                if (directLink && directLink.trim() !== "") {
-                    window.open(directLink, '_blank');
-                    return;
-                }
-                return buyVIP(item.title); 
-            }
-
             let linkToPlay = item.linkThuong || item.video;
 
             if (isVip && currentUser) {
@@ -461,22 +446,6 @@
             startAdFlow(linkToPlay);
         }
 
-        async function buyVIP(title) {
-            let days = 1;
-            let upTitle = title.toUpperCase();
-            if(upTitle.includes('3 NGÀY')) days = 3;
-            else if(upTitle.includes('1 TUẦN') || upTitle.includes('7 NGÀY')) days = 7;
-            else if(upTitle.includes('1 THÁNG') || upTitle.includes('30 NGÀY')) days = 30;
-
-            alert("Đang khởi tạo cổng thanh toán...");
-            try {
-                let res = await fetch(`${API_URL}?action=get_link&days=${days}`);
-                let data = await res.json();
-                if(data.status === "success") window.open(data.link, "_blank"); 
-                else alert(data.message);
-            } catch(e) { alert("Lỗi mạng! Đảm bảo đã thiết lập data trong Sheet."); }
-        }
-
         function startAdFlow(finalDestUrl) {
             let lastWatchTime = localStorage.getItem("lastWatchTime");
             let now = new Date().getTime();
@@ -488,7 +457,7 @@
 
             targetDestinationUrl = finalDestUrl;
             
-            // --- HỆ THỐNG LUÂN PHIÊN QUẢNG CÁO CHỈ CÒN 2 LINK MỚI YÊU CẦU ---
+            // --- HỆ THỐNG LUÂN PHIÊN QUẢNG CÁO 2 TIKTOK ---
             let currentAdStep = localStorage.getItem('adStep') || '1';
             let adUrl = "";
             
@@ -509,7 +478,7 @@
             let textSec = document.getElementById("ad-text-sec");
             let adTitle = document.getElementById("ad-title");
 
-            overlay.style.display = "flex"; // Đổi thành flex để căn giữa
+            overlay.style.display = "flex"; 
             timerEl.style.display = "block";
             textSec.style.display = "block";
             warningEl.style.display = "none";
